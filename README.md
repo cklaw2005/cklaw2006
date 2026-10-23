@@ -1,18 +1,29 @@
 # Workstation 2 DOE training guide
 
-A responsive Chinese/English static training site built from the author's DOE training material. This is a public development preview; corrections and suggestions are welcome through the repository's Issues page.
+A responsive Chinese/English training site for engineers learning Design of Experiments (DOE). It is a public learning resource and welcomes careful corrections and suggestions.
 
-## Contents and source traceability
+## Open the guide
 
-The site presents the source-reported goal, three inputs (Timing, Temperature, Pressure), Volume response, factor settings, all 16 transcribed runs, and source-page citations beside related explanations. The original PDF and its extracted screenshots are not included in this repository. Source references use the original page numbers without exposing the source document's filename or station identity. Minitab steps are teaching explanations mapped to cited pages.
+- Website: https://cklaw2005.github.io/cklaw2006/
+- Source repository: https://github.com/cklaw2005/cklaw2006
+- Feedback and corrections: https://github.com/cklaw2005/cklaw2006/issues/new
 
-The charts use the 16 transcribed runs. The parameter explorer reports observed values where available and labels estimates/interpolation where the exact combination is absent. Treat those as teaching aids, not a fitted Minitab model or confirmation result. The source's design-label ambiguity and missing confirmation evidence are called out in the site.
+The site is plain HTML, CSS, and JavaScript. To preview it locally, open `index.html` in a browser or serve the repository root with any static web server. GitHub Pages publishes the root of the `main` branch; no build step is required.
 
-## Preview and feedback
+## Source and data boundaries
 
-Open the published Pages site (when Pages deployment is enabled) or open `index.html` locally. To report a correction, suggest an improvement, or ask a question, [open a GitHub issue](https://github.com/cklaw2005/cklaw2006/issues/new).
+The guide transcribes the source-reported objective, the three inputs (Timing, Temperature, Pressure), the Volume response, factor settings, and 16 recorded runs. Page references alongside the explanations map the teaching content to the corresponding pages in the author's source material. The source PDF, its extracted figures, and the classroom handout are intentionally not included in this public repository.
 
-## GitHub Pages
+Charts use the transcribed runs. The interactive parameter explorer distinguishes recorded observations from estimates/interpolation when a selected combination was not observed. It is a teaching aid, not a fitted Minitab model or confirmation result. The source's design-label ambiguity and missing confirmation evidence are identified in the guide. Do not use estimates as production settings.
 
-This is a static site and needs no build step. Publish the contents of this directory from the repository root. The repository does not include the source PDF, Word handout, extracted PDF figures, or video assets.
+Minitab navigation is instructional material and may differ slightly by software release. Follow the current interface and verify analysis choices against the study objective and data structure.
 
+## 中文说明
+
+本网站以中英文介绍工程师 DOE 入门案例，包含资料中报告的目标、三个输入（Timing、Temperature、Pressure）、Volume 输出、因素设置和 16 次记录。页面标注原资料页码，方便对应查阅。原始 PDF、从 PDF 提取的图片和课堂讲义不会放在这个公开仓库。
+
+图表基于这 16 次记录。互动参数区会区分实测记录与估算/插值；它仅用于教学，不代表 Minitab 拟合模型或确认实验结果。资料中实验设计标签的歧义及未提供的确认实验信息均有说明。估算值不可作为生产参数。
+
+## Feedback
+
+Please use [GitHub Issues](https://github.com/cklaw2005/cklaw2006/issues/new) for corrections, accessibility problems, or teaching suggestions. See [CONTRIBUTING.md](CONTRIBUTING.md) for what to include. Please do not post confidential workplace information or upload the original source files.
