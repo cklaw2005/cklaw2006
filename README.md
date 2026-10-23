@@ -1,6 +1,6 @@
-# Workstation 2 DOE training guide
+# DOE Education | Engineering training
 
-A responsive Chinese/English training site for engineers learning Design of Experiments (DOE). It is a public learning resource and welcomes careful corrections and suggestions.
+A responsive Chinese/English DOE education website for engineers learning Design of Experiments. It is a public learning resource and welcomes careful corrections and suggestions.
 
 ## Open the guide
 
@@ -20,10 +20,12 @@ Minitab navigation is instructional material and may differ slightly by software
 
 ## 中文说明
 
-本网站以中英文介绍工程师 DOE 入门案例，包含资料中报告的目标、三个输入（Timing、Temperature、Pressure）、Volume 输出、因素设置和 16 次记录。页面标注原资料页码，方便对应查阅。原始 PDF、从 PDF 提取的图片和课堂讲义不会放在这个公开仓库。
+本网站为工程师提供中英文 DOE 入门教学，包含资料中报告的目标、三个输入（Timing、Temperature、Pressure）、Volume 输出、因素设置和 16 次记录。页面标注原资料页码，方便对应查阅。原始 PDF、从 PDF 提取的图片和课堂讲义不会放在这个公开仓库。
 
 图表基于这 16 次记录。互动参数区会区分实测记录与估算/插值；它仅用于教学，不代表 Minitab 拟合模型或确认实验结果。资料中实验设计标签的歧义及未提供的确认实验信息均有说明。估算值不可作为生产参数。
 
 ## Feedback
 
 Please use [GitHub Issues](https://github.com/cklaw2005/cklaw2006/issues/new) for corrections, accessibility problems, or teaching suggestions. See [CONTRIBUTING.md](CONTRIBUTING.md) for what to include. Please do not post confidential workplace information or upload the original source files.
+
+
