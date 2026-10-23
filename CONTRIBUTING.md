@@ -2,7 +2,7 @@
 
 Thank you for helping improve this engineering learning resource. Please open a GitHub Issue for a correction, question, or suggestion.
 
-感谢帮助改进这份工程学习资料。发现错误、有疑问或有教学建议时，请提交 GitHub Issue.
+感谢帮助改进这份工程学习资料。发现错误、有疑问或有教学建议时，请提交 GitHub Issue。
 
 ## What makes a useful report / 有帮助的反馈
 
