@@ -1,0 +1,42 @@
+name: Feedback or correction
+description: Report a factual correction, teaching suggestion, or accessibility issue
+title: "[Feedback]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please do not include confidential workplace information or upload source PDFs. See [CONTRIBUTING.md](https://github.com/cklaw2005/cklaw2006/blob/main/CONTRIBUTING.md).
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Feedback type
+      options:
+        - Factual correction
+        - DOE explanation
+        - Minitab instructions
+        - Translation
+        - Accessibility or display
+        - Other suggestion
+    validations:
+      required: true
+  - type: input
+    id: section
+    attributes:
+      label: Page section / source page (if relevant)
+      placeholder: e.g. Experiment matrix / source page 6
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What should be corrected or improved?
+      description: For factual corrections, cite the supporting source page. Clearly distinguish measured data from estimates.
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I have not included confidential information or private source files.
+          required: true
