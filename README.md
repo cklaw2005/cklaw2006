@@ -1,4 +1,4 @@
-# DOE Education | Engineering training
+# DOE 教育网站 | DOE Education
 
 A responsive Chinese/English DOE education website for engineers learning Design of Experiments. It is a public learning resource and welcomes careful corrections and suggestions.
 
