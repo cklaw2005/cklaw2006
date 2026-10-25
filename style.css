@@ -13,3 +13,5 @@
 .public-source-note{height:128px;display:grid;place-items:center;text-align:center;padding:20px;background:#ecefe9;border:1px dashed #c5cec3;color:#65736b;font-size:10px;line-height:1.8}
 @media(max-width:640px){.public-source-note{height:112px;font-size:9px}}
 
+.source-chart{margin:17px 0 0;padding:12px;background:#f5f6f1;border:1px solid var(--line)}.source-chart img{display:block;width:100%;height:auto;background:#fff}.source-chart figcaption{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-top:10px;color:#65736b;font-size:9px;line-height:1.7}.source-chart .source-tag{align-self:flex-start}@media(max-width:640px){.source-chart{padding:8px}.source-chart figcaption{font-size:8px}}
+
