@@ -29,6 +29,14 @@ const startGrid = Core.startingGrid(40, [10, 20, 30, 40, 50, 60]);
 assert.equal(startGrid.length, 6, 'start gate has six rider positions');
 assert.equal(new Set(startGrid.map(position => position.x)).size, 1, 'all riders line up on one straight start line');
 assert.deepEqual(startGrid.map(position => position.y), [10, 20, 30, 40, 50, 60], 'riders occupy separate lanes');
+for (const [height, width] of [[358, 635], [201, 358]]) {
+  const scale = Math.min(1, Math.max(.54, width / 410));
+  const margin = 27 * scale / height;
+  const centers = Core.laneCenters(.46, .96, margin);
+  assert.equal(centers.length, 6, 'six cyclists receive track-safe lane centers');
+  assert.ok(centers.every(y => y - margin >= .46 - 1e-9 && y + margin <= .96 + 1e-9), 'bicycle wheels and shadow remain inside the track on desktop and phone canvases');
+  assert.ok(centers[5] < .92, 'number six stays clear of the former lower rail position');
+}
 assert.ok(Core.riderRaceProgress(Core.finishProgress(0), 0) >= 1, 'the actual first rider visibly crosses before cutoff');
 assert.ok(Core.riderRaceProgress(Core.finishProgress(0), 1) < 1, 'the actual second rider has not crossed before its turn');
 assert.ok(Core.riderRaceProgress(Core.finishProgress(1), 0) >= 1, 'the actual winner is across when the second rider finishes');

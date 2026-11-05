@@ -123,30 +123,33 @@
     // Distant grandstand, rolling course details, and rail.
     ctx.fillStyle=storm?'#16262b':'#384942'; ctx.fillRect(0,h*.22,w,h*.16);
     ctx.fillStyle=storm?'#f2b764':'#e5d29a'; for(let i=0;i<32;i++){const x=(i*w/32+((progress*35)% (w/32)))%w;ctx.fillRect(x,h*.25+(i%3)*3,2,2);}
-    ctx.fillStyle=wet?'#367745':'#907447'; ctx.fillRect(0,h*.49,w,h*.43);
+    const trackTop=.46, trackBottom=.96;
+    ctx.fillStyle=wet?'#367745':'#907447'; ctx.fillRect(0,h*trackTop,w,h*(trackBottom-trackTop));
     // Continuous outside rails keep the six straight lanes legible on narrow screens.
     ctx.strokeStyle='rgba(231,226,188,.88)';ctx.lineWidth=3;
-    ctx.beginPath();ctx.moveTo(0,h*.49);ctx.lineTo(w,h*.49);ctx.moveTo(0,h*.92);ctx.lineTo(w,h*.92);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(0,h*trackTop);ctx.lineTo(w,h*trackTop);ctx.moveTo(0,h*trackBottom);ctx.lineTo(w,h*trackBottom);ctx.stroke();
     // Lane marks/paint, subtle standing water on wet courses.
-    for(let lane=1;lane<6;lane++){const y=h*(.49+lane*.071);ctx.strokeStyle='rgba(241,224,166,.52)';ctx.setLineDash([7,10]);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+    for(let lane=1;lane<6;lane++){const y=h*(trackTop+(trackBottom-trackTop)*lane/6);ctx.strokeStyle='rgba(241,224,166,.52)';ctx.setLineDash([7,10]);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
     ctx.setLineDash([]);
     if(wet){for(let i=0;i<5;i++){const px=((i*91+progress*40)%w);ctx.fillStyle='rgba(165,216,205,.48)';ctx.beginPath();ctx.ellipse(px,h*(.52+(i%4)*.09),8,2,0,0,Math.PI*2);ctx.fill();}}
     if(storm){ctx.save();ctx.strokeStyle='rgba(206,225,247,.34)';ctx.lineWidth=.8;for(let i=0;i<54;i++){const x=(i*79+now*.16)%w,y=(i*43+now*.47)%h;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-4,y+11);ctx.stroke();}ctx.restore();}
     // Start gate on left, finish line on right. The striped gate spans the full
     // six-lane field so the start is unmistakable even on a phone-sized canvas.
-    const sx=w*.075, fx=w*.91, top=h*.47, bottom=h*.94;
+    const sx=w*.075, fx=w*.91, top=h*(trackTop-.02), bottom=h*(trackBottom+.02);
     ctx.fillStyle='#101a17';ctx.fillRect(sx-7,top,14,bottom-top);
     for(let y=top;y<bottom;y+=14){ctx.fillStyle=(Math.floor((y-top)/14)%2)?'#101a17':'#f4f0d8';ctx.fillRect(sx-5,y,10,7);}
     ctx.strokeStyle='#f4f0d8';ctx.lineWidth=2;ctx.strokeRect(sx-8,top,16,bottom-top);
     ctx.fillStyle='#e9edda';ctx.fillRect(fx-2,top,4,bottom-top);
     for(let y=top;y<bottom;y+=10){ctx.fillStyle=(Math.floor((y-top)/10)%2)?'#12201b':'#f4f0d8';ctx.fillRect(fx-3,y,6,5);}
-    ctx.fillStyle='#f6f0ce';ctx.font='800 9px system-ui';ctx.fillText('START GATE',Math.max(3,sx-8),h*.45);ctx.textAlign='right';ctx.fillText('FINISH',Math.min(w-3,fx+15),h*.45);ctx.textAlign='left';
+    ctx.fillStyle='#f6f0ce';ctx.font='800 9px system-ui';ctx.fillText('START GATE',Math.max(3,sx-8),h*(trackTop-.04));ctx.textAlign='right';ctx.fillText('FINISH',Math.min(w-3,fx+15),h*(trackTop-.04));ctx.textAlign='left';
     const orderIndex = outcome ? outcome.finishOrder : [1,2,3,4,5,6];
-    const laneYs=Array.from({length:6},(_,i)=>h*(.535+i*.071));
+    const riderScale=Math.min(1,Math.max(.54,w/410));
+    const riderMargin=(27*riderScale)/h;
+    const laneYs=RaceCore.laneCenters(trackTop,trackBottom,riderMargin).map(y=>y*h);
     const grid=RaceCore.startingGrid(sx+12,laneYs);
     for(let id=1;id<=6;id++){
       const rank=orderIndex.indexOf(id), rankSafe=rank<0?id-1:rank;
-      const lane=(id-1), y=h*(.535+lane*.071), isFallen=id===fallenId && race._incidentShown;
+      const lane=(id-1), y=laneYs[lane], isFallen=id===fallenId && race._incidentShown;
       let p;
       const inRace=racing && (phase==='racing' || phase==='result');
       if(inRace){
@@ -156,7 +159,7 @@
         if(!isFallen && raceProgress>=RaceCore.finishProgress(rankSafe))p=Math.min(1.04,p+.028);
       } else p=.07;
       const x=inRace?sx+(fx-sx)*p:grid[lane].x;
-      drawCyclist(x,y,Math.min(1,Math.max(.54,w/410)),id,now,inRace&&progress>.72,isFallen);
+      drawCyclist(x,y,riderScale,id,now,inRace&&progress>.72,isFallen);
     }
   }
   function drawCyclist(x,y,scale,id,now,sprint,fallen){
@@ -236,7 +239,7 @@
     if(document.hidden){stopMusic();if(audioCtx?.state==='running')audioCtx.suspend();}
     else if(state.audio&&audioCtx){audioCtx.resume().then(startMusic).catch(()=>{});}
   });
-  if('serviceWorker'in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js?v=20261105-r4').catch(()=>{});
+  if('serviceWorker'in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js?v=20261105-r5').catch(()=>{});
   updateHud();drawIdle();
 })();
 

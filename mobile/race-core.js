@@ -84,6 +84,14 @@
   function startingGrid(startX, laneYs) {
     return laneYs.map(y => ({ x: startX, y }));
   }
+  function laneCenters(trackTop, trackBottom, riderMargin, count = N) {
+    const first = Number(trackTop) + Math.max(0, Number(riderMargin) || 0);
+    const last = Number(trackBottom) - Math.max(0, Number(riderMargin) || 0);
+    if (!Number.isFinite(first) || !Number.isFinite(last) || first > last || count < 1) {
+      throw new Error('Track must have enough room for every rider.');
+    }
+    return Array.from({ length: count }, (_, i) => count === 1 ? (first + last) / 2 : first + (last - first) * i / (count - 1));
+  }
   // The first two finish thresholds are explicit: the scene can stop as soon
   // as the actual top two have crossed, while later riders remain on track.
   function finishProgress(rank) { return 0.82 + Math.max(0, Math.trunc(rank)) * 0.045; }
@@ -110,7 +118,7 @@
     return Object.freeze({ finishOrder: Object.freeze(finishOrder), first, second, key, odds: getPairOdds(race, first, second) });
   }
   function getPairOdds(race, a, b) { return race.odds[pairKey(a, b)] || 0; }
-  root.RaceCore = { pairKey, createRace, drawFinishOrder, payout, normalizeIncidentOrder, resolveOutcome, getPairOdds, startRaceAccounting, startingGrid, finishProgress, riderRaceProgress, riderRaceProgressForOrder, PRICES };
+  root.RaceCore = { pairKey, createRace, drawFinishOrder, payout, normalizeIncidentOrder, resolveOutcome, getPairOdds, startRaceAccounting, startingGrid, laneCenters, finishProgress, riderRaceProgress, riderRaceProgressForOrder, PRICES };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.RaceCore;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 
