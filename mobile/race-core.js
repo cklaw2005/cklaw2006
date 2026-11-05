@@ -99,8 +99,18 @@
     const affected = order[0];
     return order.slice(1).concat(affected);
   }
+  // Resolve the official outcome once. The animation, result card, history, and
+  // payout all consume this same immutable finish order and pair key.
+  function resolveOutcome(race, drawnOrder, incident) {
+    const valid = Array.isArray(drawnOrder) && drawnOrder.length === N &&
+      new Set(drawnOrder).size === N && drawnOrder.every(id => Number.isInteger(id) && id >= 1 && id <= N);
+    if (!valid) throw new Error('Finish order must contain riders 1–6 exactly once.');
+    const finishOrder = normalizeIncidentOrder(drawnOrder, incident);
+    const first = finishOrder[0], second = finishOrder[1], key = pairKey(first, second);
+    return Object.freeze({ finishOrder: Object.freeze(finishOrder), first, second, key, odds: getPairOdds(race, first, second) });
+  }
   function getPairOdds(race, a, b) { return race.odds[pairKey(a, b)] || 0; }
-  root.RaceCore = { pairKey, createRace, drawFinishOrder, payout, normalizeIncidentOrder, getPairOdds, startRaceAccounting, startingGrid, finishProgress, riderRaceProgress, riderRaceProgressForOrder, PRICES };
+  root.RaceCore = { pairKey, createRace, drawFinishOrder, payout, normalizeIncidentOrder, resolveOutcome, getPairOdds, startRaceAccounting, startingGrid, finishProgress, riderRaceProgress, riderRaceProgressForOrder, PRICES };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.RaceCore;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 

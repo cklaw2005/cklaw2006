@@ -8,13 +8,13 @@
   <title>K-Race Mobile Arcade</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20261105-r4">
 </head>
 <body>
   <main class="app-shell">
     <header class="topbar">
       <div class="brand"><span class="brand-mark">K</span><span><strong>K-RACE</strong><small>ARCADE CIRCUIT</small></span></div>
-      <div class="top-actions"><button id="music-toggle" class="icon-btn" aria-label="Toggle music" title="Toggle sound">♪</button><button id="install-btn" class="install-btn" hidden>Install</button></div>
+      <div class="top-actions"><button id="music-toggle" class="icon-btn" aria-label="Turn music on" title="Turn race music on or off">♫ OFF</button><button id="install-btn" class="install-btn" hidden>Install</button></div>
     </header>
 
     <section class="hero-line" aria-live="polite">
@@ -22,7 +22,7 @@
       <div class="weather-pill" id="weather-pill"><i id="weather-dot"></i><span id="weather-label">CLEAR</span></div>
     </section>
 
-    <section class="race-card" aria-label="Live bicycle race">
+    <section class="race-card" id="race-card" aria-label="Live bicycle race">
       <div class="race-meta"><span id="race-caption">SIX RIDERS · TWO PLACES</span><span id="race-clock">BETTING OPEN</span></div>
       <canvas id="race-canvas" aria-label="Six numbered cyclists race from the start line to the finish line"></canvas>
       <div class="track-labels"><span>START</span><span id="track-status">SIDE VIEW · 6 RIDERS</span><span>FINISH</span></div>
@@ -58,7 +58,7 @@
 
     <footer>FOR AMUSEMENT ONLY · FREE ARCADE RACING<br><strong>No real-money betting · No cash prizes · Coins have no monetary value</strong></footer>
   </main>
-  <script src="race-core.js"></script><script src="app.js"></script>
+  <script src="race-core.js?v=20261105-r4"></script><script src="app.js?v=20261105-r4"></script>
 </body>
 </html>
 

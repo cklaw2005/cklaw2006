@@ -18,6 +18,11 @@ const fallenOrder = Core.normalizeIncidentOrder(order, { type: 'FALL' });
 assert.deepEqual(fallenOrder.slice(0, 5), order.slice(1), 'fallen leader is withdrawn and cannot finish');
 assert.equal(fallenOrder.at(-1), order[0], 'withdrawn rider is listed after active finishers');
 assert.equal(Core.payout(0, odds), 0, 'no stake means no payout');
+const normalOutcome = Core.resolveOutcome(race, order, null);
+assert.deepEqual(normalOutcome.finishOrder.slice(0, 2), [normalOutcome.first, normalOutcome.second], 'official first and second come from the animation finish order');
+assert.equal(normalOutcome.key, Core.pairKey(normalOutcome.first, normalOutcome.second), 'settlement key uses the official first two');
+assert.equal(normalOutcome.odds, race.odds[normalOutcome.key], 'displayed winning odds belong to the official pair');
+assert.throws(() => Core.resolveOutcome(race, [1, 1, 2, 3, 4, 5], null), /exactly once/, 'invalid order is rejected before it can be settled');
 const reservedBetStart = Core.startRaceAccounting(0, 110);
 assert.deepEqual(reservedBetStart, { balance: 0, totalInDelta: 110 }, 'a fully reserved bet starts without being deducted twice');
 const startGrid = Core.startingGrid(40, [10, 20, 30, 40, 50, 60]);
@@ -34,9 +39,14 @@ let checkedOrders = 0;
 function checkAllOrders(prefix, remaining) {
   if (!remaining.length) {
     const cutoff = Core.finishProgress(1);
-    assert.ok(Core.riderRaceProgressForOrder(prefix, prefix[0], cutoff) >= 1, 'official winner is visibly across at cutoff');
-    assert.ok(Core.riderRaceProgressForOrder(prefix, prefix[1], cutoff) >= 1, 'official second place is visibly across at cutoff');
-    assert.ok(Core.riderRaceProgressForOrder(prefix, prefix[2], cutoff) < 1, 'third place remains behind at cutoff');
+    for (const incident of [null, { type: 'FALL' }]) {
+      const result = Core.resolveOutcome(race, prefix, incident);
+      assert.ok(Core.riderRaceProgressForOrder(result.finishOrder, result.first, cutoff) >= 1, 'the official winner is visibly across at cutoff');
+      assert.ok(Core.riderRaceProgressForOrder(result.finishOrder, result.second, cutoff) >= 1, 'the official second place is visibly across at cutoff');
+      assert.ok(Core.riderRaceProgressForOrder(result.finishOrder, result.finishOrder[2], cutoff) < 1, 'third place remains behind at cutoff');
+      assert.equal(Core.pairKey(result.first, result.second), result.key, 'settlement pair matches the two riders that crossed');
+      assert.equal(result.odds, Core.getPairOdds(race, result.first, result.second), 'payout odds correspond to the same finish pair');
+    }
     checkedOrders++;
     return;
   }
@@ -44,5 +54,5 @@ function checkAllOrders(prefix, remaining) {
 }
 checkAllOrders([], [1, 2, 3, 4, 5, 6]);
 assert.equal(checkedOrders, 720, 'all possible rider orders preserve the visible result and two-place cutoff');
-console.log('Mobile self-check passed: odds, payouts, incident withdrawal, reserved-bet launch, aligned gate, and actual-order finish cutoff.');
+console.log('Mobile self-check passed: all 720 finish orders, incident and no-incident outcomes, visible first/second crossings, exact settlement pair and odds, reserved-bet launch, and aligned start gate.');
 

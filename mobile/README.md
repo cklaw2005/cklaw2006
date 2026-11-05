@@ -16,7 +16,7 @@ Then open `http://localhost:8080/mobile/`. The public HTTPS page supports servic
 
 Tap a pair, use `+`/`−` to set its stake, and tap **BET NOW**. Every pair has its own stake and the result pays the odds displayed for the actual first two riders, in either order. Tap **+10** for virtual coins or **Return** to reclaim uncommitted stakes. Race number, coin balance, and recent results are stored only in that browser's local storage.
 
-The race shows six numbered cyclists from a side view. Most races have no incident. If a fall occurs, the affected rider is withdrawn and cannot cross the finish; the other riders continue. The race ends on the second actual finish crossing. The Music control enables short synthesized arcade cues; no remote media is loaded.
+The race shows six numbered cyclists from a side view. Most races have no incident. If a fall occurs, the affected rider is withdrawn and cannot cross the finish; the other riders continue. The race ends on the second actual finish crossing. Official finish order, animation positions, result card, history, and payout all use the same resolved outcome. The Music button starts and stops a looping, synthesized arcade theme; short race and result cues are also synthesized locally. No remote audio is loaded. Audio starts only after a player taps the music button, as required by mobile browsers.
 
 ## Self-check
 
