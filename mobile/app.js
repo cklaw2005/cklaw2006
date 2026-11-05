@@ -76,7 +76,7 @@
     phase = 'racing'; notice(race.incident ? `A sudden ${race.incident.type.toLowerCase()} — the rider is withdrawn.` : 'No incident this race. The order is decided on the course.');
     updateHud(); playCue('start'); cancelAnimationFrame(raf); raf = requestAnimationFrame(animate);
   }
-  function finishRace() {
+  function finishRace(now = performance.now()) {
     phase = 'result';
     const first = order[0], second = order[1], key = RaceCore.pairKey(first, second), odds = RaceCore.getPairOdds(race, first, second);
     const payout = RaceCore.payout(pairStake(key), odds);
@@ -85,15 +85,18 @@
     const card = $('finish-readout'); card.textContent = `🏁  ${first} – ${second}  ·  ${odds}×`; card.classList.add('show');
     $('progress-fill').style.width = '100%'; notice(payout ? `Winning pair ${first}–${second} · ${odds}× odds · ${payout} virtual coins paid.` : `Official result ${first}–${second} · winning odds ${odds}× · no matching stake.`);
     updateHud(); playCue(payout ? 'win' : 'finish');
+    // Keep the camera on the actual finish instead of resetting the riders to the start.
+    renderTrack(RaceCore.finishProgress(1), now, true);
   }
   function animate(now) {
     if (phase !== 'racing') return;
     const elapsed = now - raceStart, progress = Math.min(1, elapsed / raceDuration);
-    $('race-clock').textContent = `${Math.max(0, (raceDuration - elapsed) / 1000).toFixed(1)}s`;
-    $('progress-fill').style.width = `${Math.min(100, progress * 100)}%`;
+    const cutoff = RaceCore.finishProgress(1), cutoffTime = raceDuration * cutoff;
+    $('race-clock').textContent = `${Math.max(0, (cutoffTime - elapsed) / 1000).toFixed(1)}s`;
+    $('progress-fill').style.width = `${Math.min(100, progress / cutoff * 100)}%`;
     if (fallenId && !race._incidentShown && elapsed >= fallAt) { race._incidentShown = true; playCue('fall'); }
     renderTrack(progress, now, true);
-    if (elapsed >= raceDuration) { finishRace(); drawIdle(); return; }
+    if (progress >= cutoff) { finishRace(now); return; }
     raf = requestAnimationFrame(animate);
   }
   function fitCanvas() {
@@ -128,22 +131,20 @@
     ctx.fillStyle='#f6f0ce';ctx.font='800 9px system-ui';ctx.fillText('START GATE',Math.max(3,sx-8),h*.45);ctx.textAlign='right';ctx.fillText('FINISH',Math.min(w-3,fx+15),h*.45);ctx.textAlign='left';
     const orderIndex = order ? order : [1,2,3,4,5,6];
     const laneYs=Array.from({length:6},(_,i)=>h*(.535+i*.071));
-    const grid=RaceCore.startingGrid(sx+(fx-sx)*.07,laneYs);
+    const grid=RaceCore.startingGrid(sx+12,laneYs);
     for(let id=1;id<=6;id++){
       const rank=orderIndex.indexOf(id), rankSafe=rank<0?id-1:rank;
       const lane=(id-1), y=h*(.535+lane*.071), isFallen=id===fallenId && race._incidentShown;
       let p;
-      if(phase==='racing'&&racing){
-        const finishRank=fallenId?(rankSafe+1):rankSafe;
-        const rankOffset=(5-finishRank)*.055;
-        p=Math.min(.99,Math.pow(progress,.78)*(0.72+rankOffset));
-        if(finishRank===0)p=Math.min(.99,progress*.89+rankOffset*.15);
-        if(finishRank===1)p=Math.min(.99,progress*.84+rankOffset*.11);
-        if(progress>.72)p=Math.min(.99,p+(progress-.72)*.42);
-        if(isFallen)p=Math.min(.8,Math.pow(fallAt/raceDuration,.78)*(0.72+rankOffset));
+      const inRace=racing && (phase==='racing' || phase==='result');
+      if(inRace){
+        const raceProgress=isFallen?Math.min(progress,fallAt/raceDuration):progress;
+        const riderProgress=RaceCore.riderRaceProgressForOrder(orderIndex,id,raceProgress);
+        p=.07+.93*Math.pow(riderProgress,.88);
+        if(!isFallen && raceProgress>=RaceCore.finishProgress(rankSafe))p=Math.min(1.04,p+.028);
       } else p=.07;
-      const x=phase==='racing'&&racing?sx+(fx-sx)*p:grid[lane].x;
-      drawCyclist(x,y,Math.min(1,Math.max(.54,w/410)),id,now,phase==='racing'&&progress>.72,isFallen);
+      const x=inRace?sx+(fx-sx)*p:grid[lane].x;
+      drawCyclist(x,y,Math.min(1,Math.max(.54,w/410)),id,now,inRace&&progress>.72,isFallen);
     }
     if(storm){ctx.fillStyle='rgba(9,20,30,.17)';ctx.fillRect(0,0,w,h);if(progress>.15 && progress<.45 && Math.floor(now/750)%6===0){ctx.fillStyle='rgba(215,232,255,.18)';ctx.fillRect(0,0,w,h);}}
   }

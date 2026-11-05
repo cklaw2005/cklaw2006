@@ -84,13 +84,23 @@
   function startingGrid(startX, laneYs) {
     return laneYs.map(y => ({ x: startX, y }));
   }
+  // The first two finish thresholds are explicit: the scene can stop as soon
+  // as the actual top two have crossed, while later riders remain on track.
+  function finishProgress(rank) { return 0.82 + Math.max(0, Math.trunc(rank)) * 0.045; }
+  function riderRaceProgress(progress, rank) {
+    return clamp(Math.max(0, Number(progress) || 0) / finishProgress(rank), 0, 1);
+  }
+  function riderRaceProgressForOrder(order, riderId, progress) {
+    const rank = order.indexOf(riderId);
+    return riderRaceProgress(progress, rank < 0 ? order.length : rank);
+  }
   function normalizeIncidentOrder(order, incident) {
     if (!incident) return order.slice();
     const affected = order[0];
     return order.slice(1).concat(affected);
   }
   function getPairOdds(race, a, b) { return race.odds[pairKey(a, b)] || 0; }
-  root.RaceCore = { pairKey, createRace, drawFinishOrder, payout, normalizeIncidentOrder, getPairOdds, startRaceAccounting, startingGrid, PRICES };
+  root.RaceCore = { pairKey, createRace, drawFinishOrder, payout, normalizeIncidentOrder, getPairOdds, startRaceAccounting, startingGrid, finishProgress, riderRaceProgress, riderRaceProgressForOrder, PRICES };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.RaceCore;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 

@@ -24,5 +24,25 @@ const startGrid = Core.startingGrid(40, [10, 20, 30, 40, 50, 60]);
 assert.equal(startGrid.length, 6, 'start gate has six rider positions');
 assert.equal(new Set(startGrid.map(position => position.x)).size, 1, 'all riders line up on one straight start line');
 assert.deepEqual(startGrid.map(position => position.y), [10, 20, 30, 40, 50, 60], 'riders occupy separate lanes');
-console.log('Mobile self-check passed: 15 odds, matching settlement, fall withdrawal, reserved-bet start accounting, aligned six-rider grid.');
+assert.ok(Core.riderRaceProgress(Core.finishProgress(0), 0) >= 1, 'the actual first rider visibly crosses before cutoff');
+assert.ok(Core.riderRaceProgress(Core.finishProgress(0), 1) < 1, 'the actual second rider has not crossed before its turn');
+assert.ok(Core.riderRaceProgress(Core.finishProgress(1), 0) >= 1, 'the actual winner is across when the second rider finishes');
+assert.ok(Core.riderRaceProgress(Core.finishProgress(1), 1) >= 1, 'the actual second rider visibly crosses at cutoff');
+assert.ok(Core.riderRaceProgress(Core.finishProgress(1), 2) < 1, 'third rider remains behind the cutoff');
+for (let rank = 0; rank < 5; rank++) assert.ok(Core.finishProgress(rank) < Core.finishProgress(rank + 1), 'visual finish thresholds preserve official order');
+let checkedOrders = 0;
+function checkAllOrders(prefix, remaining) {
+  if (!remaining.length) {
+    const cutoff = Core.finishProgress(1);
+    assert.ok(Core.riderRaceProgressForOrder(prefix, prefix[0], cutoff) >= 1, 'official winner is visibly across at cutoff');
+    assert.ok(Core.riderRaceProgressForOrder(prefix, prefix[1], cutoff) >= 1, 'official second place is visibly across at cutoff');
+    assert.ok(Core.riderRaceProgressForOrder(prefix, prefix[2], cutoff) < 1, 'third place remains behind at cutoff');
+    checkedOrders++;
+    return;
+  }
+  for (let i = 0; i < remaining.length; i++) checkAllOrders(prefix.concat(remaining[i]), remaining.slice(0, i).concat(remaining.slice(i + 1)));
+}
+checkAllOrders([], [1, 2, 3, 4, 5, 6]);
+assert.equal(checkedOrders, 720, 'all possible rider orders preserve the visible result and two-place cutoff');
+console.log('Mobile self-check passed: odds, payouts, incident withdrawal, reserved-bet launch, aligned gate, and actual-order finish cutoff.');
 
