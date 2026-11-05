@@ -73,13 +73,24 @@
     return order;
   }
   function payout(stake, odds) { return Math.floor(Math.max(0, stake) * Math.max(0, odds)); }
+  // Stake coins are reserved as the player changes each pair's amount. Starting
+  // the race records that reserved input but must not reserve or deduct it again.
+  function startRaceAccounting(balance, totalStake) {
+    return {
+      balance: Math.max(0, Math.trunc(Number(balance) || 0)),
+      totalInDelta: Math.max(0, Math.trunc(Number(totalStake) || 0))
+    };
+  }
+  function startingGrid(startX, laneYs) {
+    return laneYs.map(y => ({ x: startX, y }));
+  }
   function normalizeIncidentOrder(order, incident) {
     if (!incident) return order.slice();
     const affected = order[0];
     return order.slice(1).concat(affected);
   }
   function getPairOdds(race, a, b) { return race.odds[pairKey(a, b)] || 0; }
-  root.RaceCore = { pairKey, createRace, drawFinishOrder, payout, normalizeIncidentOrder, getPairOdds, PRICES };
+  root.RaceCore = { pairKey, createRace, drawFinishOrder, payout, normalizeIncidentOrder, getPairOdds, startRaceAccounting, startingGrid, PRICES };
   if (typeof module !== 'undefined' && module.exports) module.exports = root.RaceCore;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
 

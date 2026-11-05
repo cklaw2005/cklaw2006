@@ -60,14 +60,14 @@
     if (phase === 'result') { state.round++; newRound(); return; }
     if (phase !== 'betting') return;
     const stakeTotal = Object.values(bets).reduce((sum, amount) => sum + amount, 0);
-    if (stakeTotal > state.coins) return notice('Your total stake is higher than your coin balance.');
+    const accounting = RaceCore.startRaceAccounting(state.coins, stakeTotal);
     order = RaceCore.drawFinishOrder(race);
     fallenId = race.incident ? order[0] : 0;
     // The incident changes the real finish order: a withdrawn rider cannot be one of the finishers.
     const activeOrder = fallenId ? order.slice(1) : order.slice();
     const finishOrder = activeOrder.concat(fallenId ? [fallenId] : []);
     order = finishOrder;
-    state.coins -= stakeTotal; state.totalIn += stakeTotal; raceStart = performance.now();
+    state.coins = accounting.balance; state.totalIn += accounting.totalInDelta; raceStart = performance.now();
     raceDuration = 23000 + Math.floor(Math.random() * 10001); fallAt = raceDuration * (race.incident?.trigger || 1);
     if (fallenId) {
       // Show the incident during the race, but retain the generated order of all other riders.
@@ -110,16 +110,25 @@
     ctx.fillStyle=storm?'#16262b':'#384942'; ctx.fillRect(0,h*.22,w,h*.16);
     ctx.fillStyle=storm?'#f2b764':'#e5d29a'; for(let i=0;i<32;i++){const x=(i*w/32+((progress*35)% (w/32)))%w;ctx.fillRect(x,h*.25+(i%3)*3,2,2);}
     ctx.fillStyle=wet?'#367745':'#907447'; ctx.fillRect(0,h*.49,w,h*.43);
+    // Continuous outside rails keep the six straight lanes legible on narrow screens.
+    ctx.strokeStyle='rgba(231,226,188,.88)';ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(0,h*.49);ctx.lineTo(w,h*.49);ctx.moveTo(0,h*.92);ctx.lineTo(w,h*.92);ctx.stroke();
     // Lane marks/paint, subtle standing water on wet courses.
     for(let lane=1;lane<6;lane++){const y=h*(.49+lane*.071);ctx.strokeStyle='rgba(241,224,166,.52)';ctx.setLineDash([7,10]);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
     ctx.setLineDash([]);
     if(wet){for(let i=0;i<5;i++){const px=((i*91+progress*40)%w);ctx.fillStyle='rgba(165,216,205,.48)';ctx.beginPath();ctx.ellipse(px,h*(.52+(i%4)*.09),8,2,0,0,Math.PI*2);ctx.fill();}}
-    // Start gate on left, finish line on right.
+    // Start gate on left, finish line on right. The striped gate spans the full
+    // six-lane field so the start is unmistakable even on a phone-sized canvas.
     const sx=w*.075, fx=w*.91, top=h*.47, bottom=h*.94;
-    ctx.fillStyle='#e9edda';ctx.fillRect(sx-2,top,4,bottom-top);ctx.fillRect(fx-2,top,4,bottom-top);
+    ctx.fillStyle='#101a17';ctx.fillRect(sx-7,top,14,bottom-top);
+    for(let y=top;y<bottom;y+=14){ctx.fillStyle=(Math.floor((y-top)/14)%2)?'#101a17':'#f4f0d8';ctx.fillRect(sx-5,y,10,7);}
+    ctx.strokeStyle='#f4f0d8';ctx.lineWidth=2;ctx.strokeRect(sx-8,top,16,bottom-top);
+    ctx.fillStyle='#e9edda';ctx.fillRect(fx-2,top,4,bottom-top);
     for(let y=top;y<bottom;y+=10){ctx.fillStyle=(Math.floor((y-top)/10)%2)?'#12201b':'#f4f0d8';ctx.fillRect(fx-3,y,6,5);}
-    ctx.fillStyle='#f6f0ce';ctx.font='700 8px system-ui';ctx.fillText('START',Math.max(3,sx-13),h*.45);ctx.textAlign='right';ctx.fillText('FINISH',Math.min(w-3,fx+15),h*.45);ctx.textAlign='left';
+    ctx.fillStyle='#f6f0ce';ctx.font='800 9px system-ui';ctx.fillText('START GATE',Math.max(3,sx-8),h*.45);ctx.textAlign='right';ctx.fillText('FINISH',Math.min(w-3,fx+15),h*.45);ctx.textAlign='left';
     const orderIndex = order ? order : [1,2,3,4,5,6];
+    const laneYs=Array.from({length:6},(_,i)=>h*(.535+i*.071));
+    const grid=RaceCore.startingGrid(sx+(fx-sx)*.07,laneYs);
     for(let id=1;id<=6;id++){
       const rank=orderIndex.indexOf(id), rankSafe=rank<0?id-1:rank;
       const lane=(id-1), y=h*(.535+lane*.071), isFallen=id===fallenId && race._incidentShown;
@@ -132,8 +141,8 @@
         if(finishRank===1)p=Math.min(.99,progress*.84+rankOffset*.11);
         if(progress>.72)p=Math.min(.99,p+(progress-.72)*.42);
         if(isFallen)p=Math.min(.8,Math.pow(fallAt/raceDuration,.78)*(0.72+rankOffset));
-      } else p=.07+lane*.012;
-      const x=sx+(fx-sx)*p;
+      } else p=.07;
+      const x=phase==='racing'&&racing?sx+(fx-sx)*p:grid[lane].x;
       drawCyclist(x,y,Math.min(1,Math.max(.54,w/410)),id,now,phase==='racing'&&progress>.72,isFallen);
     }
     if(storm){ctx.fillStyle='rgba(9,20,30,.17)';ctx.fillRect(0,0,w,h);if(progress>.15 && progress<.45 && Math.floor(now/750)%6===0){ctx.fillStyle='rgba(215,232,255,.18)';ctx.fillRect(0,0,w,h);}}
