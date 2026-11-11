@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#071a17">
   <meta name="description" content="A free six-rider bicycle racing arcade game. Virtual coins only; no cash prizes.">
-  <title>K-Race Mobile Arcade</title>
+  <title>PACEBREAK Mobile Arcade</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css?v=20261105-r5">
+  <link rel="stylesheet" href="style.css?v=20261111-r1">
 </head>
 <body>
   <main class="app-shell">
     <header class="topbar">
-      <div class="brand"><span class="brand-mark">K</span><span><strong>K-RACE</strong><small>ARCADE CIRCUIT</small></span></div>
-      <div class="top-actions"><button id="music-toggle" class="icon-btn" aria-label="Turn music on" title="Turn race music on or off">♫ OFF</button><button id="install-btn" class="install-btn" hidden>Install</button></div>
+      <div class="brand"><span class="brand-mark">P</span><span><strong>PACEBREAK</strong><small>ARCADE CIRCUIT</small></span></div>
+      <div class="top-actions"><button id="last-game" class="small-btn" title="Open the previous race record">LAST GAME</button><button id="music-toggle" class="icon-btn" aria-label="Turn music on" title="Turn race music on or off">♫ OFF</button><button id="reset-game" class="small-btn" title="Reset this game without losing settled coins">RESET</button><button id="install-btn" class="install-btn" hidden>Install</button></div>
     </header>
 
     <section class="hero-line" aria-live="polite">
       <div><span class="eyebrow">ROUND <b id="round-number">001</b></span><h1 id="phase-title">Choose your pair</h1></div>
-      <div class="weather-pill" id="weather-pill"><i id="weather-dot"></i><span id="weather-label">CLEAR</span></div>
+      <div class="weather-pill" id="weather-pill"><i id="weather-dot"></i><span id="weather-label">DRY DIRT</span></div>
     </section>
 
     <section class="race-card" id="race-card" aria-label="Live bicycle race">
@@ -35,6 +35,7 @@
       <div class="wallet-actions"><button id="coin-in" class="small-btn">+10</button><button id="coin-out" class="small-btn">Return</button></div>
       <div class="record-chip"><small>RACES</small><strong id="races-played">0</strong></div>
     </section>
+    <section class="totals-row" aria-label="Cumulative virtual coin totals"><span>COIN IN <b id="total-in">0</b></span><span>COIN OUT <b id="total-out">0</b></span></section>
 
     <section class="tips-row" aria-label="Race tips">
       <span class="section-label">PACE TIPS <em>GUIDES, NOT GUARANTEES</em></span>
@@ -42,23 +43,24 @@
     </section>
 
     <section class="bet-panel" id="bet-panel">
-      <div class="section-heading"><div><span class="section-label">PICK YOUR TOP TWO</span><small>Either order wins · odds lock at start</small></div><span class="stake-total"><b id="total-stake">0</b> staked</span></div>
+      <div class="section-heading"><div><span class="section-label" id="market-title">PICK YOUR TOP TWO</span><small id="market-help">Either order wins · odds lock at start</small></div><span class="stake-total"><b id="total-stake">0</b> staked</span></div>
+      <div class="market-tabs" role="tablist" aria-label="Bet market"><button type="button" class="market-tab active" data-market="pair" role="tab" aria-selected="true">TOP TWO</button><button type="button" class="market-tab" data-market="single" role="tab" aria-selected="false">1ST PLACE</button></div>
       <div class="pair-grid" id="pair-grid" aria-label="Choose a pair of riders"></div>
+      <div class="pair-grid" id="single-grid" aria-label="Choose a first-place rider" hidden></div>
       <div class="bet-controls">
-        <div class="stake-stepper"><button id="stake-minus" aria-label="Decrease selected pair stake">−</button><span><small>SELECTED BET</small><b id="selected-stake">0</b></span><button id="stake-plus" aria-label="Increase selected pair stake">+</button></div>
+        <div class="stake-stepper"><button id="stake-minus" aria-label="Decrease selected bet stake">−</button><span><small>SELECTED BET</small><b id="selected-stake">0</b></span><button id="stake-plus" aria-label="Increase selected bet stake">+</button></div>
         <button id="race-button" class="primary-btn">BET NOW <span>›</span></button>
       </div>
       <p class="notice" id="notice" aria-live="polite">Choose a pair, then set your virtual coin stake.</p>
     </section>
 
     <section class="history-panel">
-      <div class="section-heading"><span class="section-label">RECENT RESULTS</span><button id="last-game" class="text-btn">Last race</button></div>
+      <div class="section-heading"><span class="section-label">RECENT RESULTS</span><button id="last-game-inline" class="text-btn">Last race</button></div>
       <div id="history-list" class="history-list"><span class="empty-history">Your latest five races appear here.</span></div>
     </section>
 
     <footer>FOR AMUSEMENT ONLY · FREE ARCADE RACING<br><strong>No real-money betting · No cash prizes · Coins have no monetary value</strong></footer>
   </main>
-  <script src="race-core.js?v=20261105-r5"></script><script src="app.js?v=20261105-r5"></script>
+  <script src="race-core.js?v=20261111-r1"></script><script src="app.js?v=20261111-r1"></script>
 </body>
 </html>
-

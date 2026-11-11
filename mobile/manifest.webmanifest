@@ -1,6 +1,6 @@
 {
-  "name": "K-Race Mobile Arcade",
-  "short_name": "K-Race",
+  "name": "PACEBREAK Mobile Arcade",
+  "short_name": "PACEBREAK",
   "description": "Free six-rider bicycle racing arcade game. Virtual coins only.",
   "start_url": "./index.html",
   "scope": "./",
@@ -10,4 +10,3 @@
   "theme_color": "#071a17",
   "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
 }
-
